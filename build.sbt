@@ -2,14 +2,16 @@ name := """keibaweb"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayJava)
+lazy val root = (project in file(".")).enablePlugins(PlayJava,PlayEbean)
 
 scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq(
+  evolutions,
   javaJdbc,
   cache,
-  javaWs
+  javaWs,
+  "org.postgresql" % "postgresql" % "9.4.1212"
 )
 ivyConfiguration ~= { originalIvyConfiguration =>
 
@@ -27,5 +29,5 @@ ivyConfiguration ~= { originalIvyConfiguration =>
 
 }
 EclipseKeys.projectFlavor := EclipseProjectFlavor.Java           // Java project. Don't expect Scala IDE
-EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClasses, EclipseCreateSrc.ManagedResources)  // Use .class files instead of generated .scala files for views and routes 
+EclipseKeys.createSrc := EclipseCreateSrc.ValueSet(EclipseCreateSrc.ManagedClasses, EclipseCreateSrc.ManagedResources)  // Use .class files instead of generated .scala files for views and routes
 EclipseKeys.preTasks := Seq(compile in Compile)
