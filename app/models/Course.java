@@ -12,32 +12,32 @@ import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 
 @Entity
-@Table(name = "ms_location")
-public class Location extends Model {
-	@Id
-	@Column(name = "location_kbn")
-	private String locationKbn;
+@Table(name = "ms_distance")
+public class Course extends Model {
+    @Id
+    @Column(name = "course_kbn")
+    private String courseKbn;
 
-	@Column(name = "location_name")
-	private String locationName;
+    @Column(name = "course_name")
+    private String courseName;
 
-	@CreatedTimestamp
-	@Column(name = "create_date")
-	private Timestamp createDate;
+    @CreatedTimestamp
+    @Column(name = "create_date")
+    private Timestamp createDate;
 
-	@UpdatedTimestamp
-	@Column(name = "update_date")
-	private Timestamp updateDate;
+    @UpdatedTimestamp
+    @Column(name = "update_date")
+    private Timestamp updateDate;
 
-	@Column(name = "delete_date")
-	private Timestamp deleteDate;
+    @Column(name = "delete_date")
+    private Timestamp deleteDate;
 
-    public void setLocationKbn(String kbn) {
-        this.locationKbn = kbn;
+    public void setCourseKbn(String kbn){
+        this.courseKbn = kbn;
     }
 
-    public void setLocationName(String name) {
-        this.locationName = name;
+    public void setCourseName(String name){
+        this.courseName = name;
     }
 
     public void setCreateDate(Timestamp date) {
@@ -52,12 +52,12 @@ public class Location extends Model {
         this.deleteDate = date;
     }
 
-    public String getLocationKbn() {
-        return this.locationKbn;
+    public String getCourseKbn() {
+        return this.courseKbn;
     }
 
-    public String getLocationName() {
-        return this.locationName;
+    public String getcourseName() {
+        return this.courseName;
     }
 
     public Timestamp getCreateDate() {
@@ -72,6 +72,6 @@ public class Location extends Model {
         return this.deleteDate;
     }
 
-    private static Find<String, Location> find = new Find<String, Location>() {
+    private static Find<String, Course> find = new Find<String, Course>() {
     };
 }

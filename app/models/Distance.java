@@ -12,32 +12,32 @@ import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 
 @Entity
-@Table(name = "ms_location")
-public class Location extends Model {
-	@Id
-	@Column(name = "location_kbn")
-	private String locationKbn;
+@Table(name = "ms_distance")
+public class Distance extends Model {
+    @Id
+    @Column(name = "distance_kbn")
+    private String distanceKbn;
 
-	@Column(name = "location_name")
-	private String locationName;
+    @Column(name = "distance_name")
+    private String distanceName;
 
-	@CreatedTimestamp
-	@Column(name = "create_date")
-	private Timestamp createDate;
+    @CreatedTimestamp
+    @Column(name = "create_date")
+    private Timestamp createDate;
 
-	@UpdatedTimestamp
-	@Column(name = "update_date")
-	private Timestamp updateDate;
+    @UpdatedTimestamp
+    @Column(name = "update_date")
+    private Timestamp updateDate;
 
-	@Column(name = "delete_date")
-	private Timestamp deleteDate;
+    @Column(name = "delete_date")
+    private Timestamp deleteDate;
 
-    public void setLocationKbn(String kbn) {
-        this.locationKbn = kbn;
+    public void setDistanceKbn(String kbn) {
+        this.distanceKbn = kbn;
     }
 
-    public void setLocationName(String name) {
-        this.locationName = name;
+    public void setDistanceName(String name) {
+        this.distanceName = name;
     }
 
     public void setCreateDate(Timestamp date) {
@@ -52,12 +52,12 @@ public class Location extends Model {
         this.deleteDate = date;
     }
 
-    public String getLocationKbn() {
-        return this.locationKbn;
+    public String getDistanceKbn() {
+        return this.distanceKbn;
     }
 
-    public String getLocationName() {
-        return this.locationName;
+    public String getDistanceName() {
+        return this.distanceName;
     }
 
     public Timestamp getCreateDate() {
@@ -72,6 +72,6 @@ public class Location extends Model {
         return this.deleteDate;
     }
 
-    private static Find<String, Location> find = new Find<String, Location>() {
+    public static Find<String, Distance> find = new Find<String, Distance>(){
     };
 }
