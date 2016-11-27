@@ -12,7 +12,7 @@ import com.avaje.ebean.annotation.CreatedTimestamp;
 import com.avaje.ebean.annotation.UpdatedTimestamp;
 
 @Entity
-@Table(name = "ms_distance")
+@Table(name = "ms_course")
 public class Course extends Model {
     @Id
     @Column(name = "course_kbn")
@@ -56,7 +56,7 @@ public class Course extends Model {
         return this.courseKbn;
     }
 
-    public String getcourseName() {
+    public String getCourseName() {
         return this.courseName;
     }
 
@@ -72,6 +72,6 @@ public class Course extends Model {
         return this.deleteDate;
     }
 
-    private static Find<String, Course> find = new Find<String, Course>() {
+    public static Find<String, Course> find = new Find<String, Course>() {
     };
 }

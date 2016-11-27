@@ -3,6 +3,15 @@
 
 # --- !Ups
 
+create table ms_course (
+  course_kbn                    varchar(255) not null,
+  course_name                   varchar(255),
+  delete_date                   timestamp,
+  create_date                   timestamp not null,
+  update_date                   timestamp not null,
+  constraint pk_ms_course primary key (course_kbn)
+);
+
 create table ms_distance (
   distance_kbn                  varchar(255) not null,
   distance_name                 varchar(255),
@@ -256,6 +265,8 @@ create table tr_win_pattern (
 
 
 # --- !Downs
+
+drop table if exists ms_course cascade;
 
 drop table if exists ms_distance cascade;
 

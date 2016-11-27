@@ -1,0 +1,96 @@
+.clearfix:after{
+  content: ".";
+  display: block;
+  height: 0;
+  font-size:0;
+  clear: both;
+  visibility:hidden;
+}
+#nav ul{
+  margin:0 20px;
+  padding:0;
+  list-style:none;
+}
+
+/* ナビゲーションのスタイル */
+#nav ul{
+  width:600px;
+  border-right:1px dotted #ddd;
+  background:#fff;
+}
+#nav li{
+  float:left;
+  height: 45px;
+  width: 119px;
+  border-left:1px dotted #ddd;
+}
+
+#nav li a{
+  display: block;
+  position: relative;
+  height: 45px;
+  width: 119px;
+  font-size:16px;
+  text-decoration: none;
+  line-height: 45px;
+  text-align: center;
+  color: #777;
+}
+#nav li a:hover:after,#nav li a.on:after{
+  content:"▲";
+  font-size:7px;
+  position:absolute;
+  bottom:-22px;
+  left:55px;
+}
+.nav1 a{
+  border-bottom:4px solid #ff6a6a;
+}
+.nav1 a:hover:after,.nav1 a.on:after{
+  color:#ff6a6a;
+}
+.nav2 a{
+  border-bottom:4px solid #ffbb6a;
+}
+.nav2 a:hover:after,.nav2 a.on:after{
+  color:#ffbb6a;
+}
+.nav3 a{
+  border-bottom:4px solid #e5e478;
+}
+.nav3 a:hover:after,.nav3 a.on:after{
+  color:#e5e478;
+}
+.nav4 a{
+  border-bottom:4px solid #70b956;
+}
+.nav4 a:hover:after,.nav4 a.on:after{
+  color:#70b956;
+}
+.nav5 a{
+  border-bottom:4px solid #56b9a5;
+}
+.nav5 a:hover:after,.nav5 a.on:after{
+  color:#56b9a5;
+}
+
+.input_table {
+  border: solid 1px;
+	border-collapse: collapse;
+}
+
+.input_table th {
+  border: solid 1px;
+	background-color: #dcdcdc;
+	text-align: center;
+	font-style: italic;
+	font-weight: normal;
+}
+
+.input_table td {
+	border: solid 1px;
+}
+
+.input_table td input{
+	text-align: right;
+}

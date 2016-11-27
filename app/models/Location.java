@@ -72,6 +72,6 @@ public class Location extends Model {
         return this.deleteDate;
     }
 
-    private static Find<String, Location> find = new Find<String, Location>() {
+    public static Find<String, Location> find = new Find<String, Location>() {
     };
 }

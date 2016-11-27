@@ -1,14 +1,38 @@
 @* keibaweb Template File *@
-@(param: Any)
+@(information: List[com.avaje.ebean.SqlRow])
 
 <html lang="ja">
 	<head>
 		<meta http-equiv="content-language" content="ja">
 		<meta http:equiv="content-type" content="text/html;charset=UTF-8">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-cache">
 		<title>TOPページ</title>
-		<script src="@routes.Assets.versioned("easyui/jquery.easyui.min.js")" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("easyui/themes/default/easyui.css")">
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("easyui/themes/icon.css")">
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/main.css")">
 		<script src="@routes.Assets.versioned("easyui/jquery.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("easyui/jquery.easyui.min.js")" type="text/javascript"></script>
+
 	</head>
 	<body>
-	</body>
+    @* 共通メニュー *@
+    @menu()
+    <p/>
+    <p/>
+    <p/>
+    <p/>
+    <div id="p" class="easyui-panel" title="お知らせ" style="width:700px;height:250px;padding:10px;">
+      @if(information != null) {
+        <p style="font-size:12px">今週開催のレース：</p>
+        <ul>
+          @for(info<-information) {
+            <li>@info.getString("open_date") : @info.getString("location_name")競馬場</li>
+          }
+        </ul>
+      } else {
+        <p style="font-size:12px">今週開催のレースはありません</p>
+      }
+    </div>
+  </body>
 </html>
