@@ -91,6 +91,13 @@
 	border: solid 1px;
 }
 
+.input_table td.title {
+  text-align: center;
+  font-style: italic;
+  font-weight: normal;
+  font-size: 11px;
+}
+
 .input_table td input{
 	text-align: right;
 }

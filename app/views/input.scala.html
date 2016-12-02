@@ -21,7 +21,7 @@
     <p/>
     <p/>
     <div>
-    <form id="list_form" name="list_form">
+    <form id="list_form" name="list_form" action="/forecast" method="POST">
       <div class="easyui-panel" style="width:100%;max-width:750px;padding:20px 40px;">
         <input id="open_date" name="open_date" class="easyui-datebox" label="開催日:" labelPosition="left" data-options="formatter:myformatter,parser:myparser" style="width:300px;">
         &nbsp;&nbsp;
@@ -32,54 +32,16 @@
         </select>
       </div>
       <p/>
-@*
-      <div style="margin:20px 0;">
-        <a href="javascript:void(0)" class="easyui-linkbutton" onClick="$('#w').window('open')">Open</a>
-      </div>
-      <div id="w" class="easyui-window" title="Modal Window" data-options="modal:true,closed:true" style="width:500px;height:250px;padding:1opx"">
-        <div style="margin-bottom:20px">
-          <input id="data_area" class="easyui-textbox" label="Description:" labelPosition="top" multiline="true"
-                 data-options="required:true" style="width:100%;height:120px">
-          <p/>
-          <a href="javascript:void(0)" class="easyui-linkbutton" onClick="onReadForecastParameter(1)">読み込み</a>
-          <a href="javascript:void(0)" class="easyui-linkbutton" onClick="$('#data_area').textbox('clear')">クリア</a>
-        </div>
-      </div>
-      <table id="dg2" class="easyui-datagrid" title="コンピ指数：" style="width:950px;height:370px"
-            data-options="singleSelect:true, rownumbers:true, url:'/forecast.json', method:'get'">
-        <thead>
-          <tr>
-            <th data-options="field:'compIndex1', width:50">idx:1</th>
-            <th data-options="field:'compIndex2', width:50">idx:2</th>
-            <th data-options="field:'compIndex3', width:50">idx:3</th>
-            <th data-options="field:'compIndex4', width:50">idx:4</th>
-            <th data-options="field:'compIndex5', width:50">idx:5</th>
-            <th data-options="field:'compIndex6', width:50">idx:6</th>
-            <th data-options="field:'compIndex7', width:50">idx:7</th>
-            <th data-options="field:'compIndex8', width:50">idx:8</th>
-            <th data-options="field:'compIndex9', width:50">idx:9</th>
-            <th data-options="field:'compIndex10', width:50">idx:10</th>
-            <th data-options="field:'compIndex11', width:50">idx:11</th>
-            <th data-options="field:'compIndex12', width:50">idx:12</th>
-            <th data-options="field:'compIndex13', width:50">idx:13</th>
-            <th data-options="field:'compIndex14', width:50">idx:14</th>
-            <th data-options="field:'compIndex15', width:50">idx:15</th>
-            <th data-options="field:'compIndex16', width:50">idx:16</th>
-            <th data-options="field:'compIndex17', width:50">idx:17</th>
-            <th data-options="field:'compIndex18', width:50">idx:18</th>
-          </tr>
-        </thead>
-      </table>
-*@
       <p/>
       <p/>
-      <div class="easyui-panel" title="コンピ指数：" style="width:1024px;">
+      <div class="easyui-panel" title="コンピ指数：" style="width:1200px;">
       <table class="input_table">
         <tr>
           <th></th>
           <th>条件</th>
           <th>コース</th>
           <th>距離</th>
+          <th></th>
           @for(j <- 1 to 18) {
             <th>@(j + "th")</th>
           }
@@ -88,31 +50,32 @@
           <tr>
             <td rowspan="2">@(i + "R")</td>
             <td rowspan="2">
-              <select id="@("open" + i + "_rank")" name="@("open" + i + "_rank")">
+              <select class="easyui-combobox" id="@("open" + i + "_rank")" name="@("open" + i + "_rank")" style="width:100px;">
                 @for(rank<-ranks) {
                   @if(rank.getRankKbn() != "5") {
-                    <option value"@rank.getRankKbn()">@rank.getRankName()</option>
+                    <option value="@rank.getRankKbn()">@rank.getRankName()</option>
                   } else {
-                    <option value"@rank.getRankKbn()" disabled>@rank.getRankName()</option>
+                    <option value="@rank.getRankKbn()" disabled>@rank.getRankName()</option>
                   }
                 }
               </select>
             </td>
             <td rowspan="2">
-              <select id="@("open" + i + "_course")" name="@("open" + i + "_course")">
+              <select class="easyui-combobox" id="@("open" + i + "_course")" name="@("open" + i + "_course")" style="width:80px;">
                 @for(course<-courses) {
                   <option value="@course.getCourseKbn()">@course.getCourseName()</option>
                 }
               </select>
             </td>
             <td rowspan="2">
-              <select id="@("open" + i + "_distance")" name="@("open" + i + "_distance")">
+              <select class="easyui-combobox" id="@("open" + i + "_distance")" name="@("open" + i + "_distance")" style="width:80px;">
                 @for(distance<-distances) {
                   <option value="@distance.getDistanceKbn()">@distance.getDistanceName()</option>
                 }
                 <option value="999">その他</option>
               </select>
             </td>
+            <td class="title">馬番</td>
             <td><input type="text" size="2" id="@("open" + i + "_number1")" name="@("open" + i + "_number1")" value="0"></td>
             <td><input type="text" size="2" id="@("open" + i + "_number2")" name="@("open" + i + "_number2")" value="0"></td>
             <td><input type="text" size="2" id="@("open" + i + "_number3")" name="@("open" + i + "_number3")" value="0"></td>
@@ -133,6 +96,7 @@
             <td><input type="text" size="2" id="@("open" + i + "_number18")" name="@("open" + i + "_number18")" value="0"></td>
           </tr>
           <tr>
+            <td class="title">指数</td>
             <td><input type="text" size="2" id="@("open" + i + "_index1")" name="@("open" + i + "_index1")" value="0"></td>
             <td><input type="text" size="2" id="@("open" + i + "_index2")" name="@("open" + i + "_index2")" value="0"></td>
             <td><input type="text" size="2" id="@("open" + i + "_index3")" name="@("open" + i + "_index3")" value="0"></td>
@@ -155,6 +119,13 @@
         }
       </table>
       </div>
+      <p/>
+      <p/>
+      <div>
+        <button type="submit" id="forecast" name="forecast" onClick="return checkForecast()">予想</button>
+        &nbsp;&nbsp;
+        <button type="button" id="clear" name="clear" onClick="clearForm()">クリア</button>
+      </div>
     </form>
     </div>
     </body>
@@ -163,25 +134,49 @@
           $('#open_date').datebox('setValue', new Date());
       });
 
+      function clearForm(){
+          for(i = 1; i < 13; i++) {
+              for(j = 1; j < 19; j++) {
+                  document.getElementById('open' + i + '_number' + j).value = "0";
+                  document.getElementById('open' + i + '_index' + j).value = "0";
+              }
+              document.getElementById('open' + i +'_rank').value = "0";
+              document.getElementById('open' + i +'_course').value = "0";
+              document.getElementById('open' + i +'_distance').value = "100";
+          }
+      }
+
       function myformatter(date) {
-            var year = date.getFullYear();
-            var month = date.getMonth() + 1;
-            var day = date.getDate();
+          var year = date.getFullYear();
+          var month = date.getMonth() + 1;
+          var day = date.getDate();
 
-            var ret = year + '/' + month + '/' + day;
+          var ret = year + '/' + month + '/' + day;
 
-            return ret;
-        }
+          return ret;
+      }
 
-        function myparser(s) {
+      function myparser(s) {
 
-        }
+      }
 
-        function onReadForecastParameter(id){
-        	  var openDate = $('#open_date').datebox('getValue');
-        	  var location = $('#location').combobox('getValue');
+      function onReadForecastParameter(id){
+      	  var openDate = $('#open_date').datebox('getValue');
+      	  var location = $('#location').combobox('getValue');
 
-        	  $('#w').window('close');
-        }
+      	  $('#w').window('close');
+      }
+
+      function checkForecast() {
+    	    $.messager.confirm('処理の確認', '処理を開始します。<br/>よろしいですか？',function(r){
+    	    	  if(!r) {
+        	    	  return false;
+    	    	  } else {
+        	    	  return true;
+    	    	  }
+        	});
+        	return false;
+      }
+
     </script>
 </html>

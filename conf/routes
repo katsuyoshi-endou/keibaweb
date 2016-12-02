@@ -15,3 +15,6 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET /keibaweb						controllers.ApplicationController.showKeibaweb()
 GET /input                          controllers.ApplicationController.showInputPage()
 GET /forecast.json                  controllers.ApplicationController.getRaceCompIndex()
+POST /forecast                      controllers.ApplicationController.showForecastPage()
+GET /result							controllers.ApplicationController.showResultPage()
+POST /result.json					controllers.ApplicationController.getRaceResult()
