@@ -1,30 +1,58 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Expr;
+import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.SqlQuery;
 import com.avaje.ebean.SqlRow;
+import com.typesafe.config.ConfigFactory;
 
+import controllers.dbaccess.DataAccess;
 import models.Course;
 import models.Distance;
 import models.Location;
+import models.Race;
 import models.Rank;
+import models.Sample;
 import models.custom.RaceForecastInfo;
 import models.custom.RaceResultInfo;
 import play.Logger;
+import play.api.Play;
 import play.libs.Json;
+import play.libs.mailer.Email;
+import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.forecast;
 import views.html.input;
 import views.html.keibaweb;
+import views.html.list;
 import views.html.result;
+import views.html.calendar;
+import views.html.raceinfo;
+import views.html.raceresult;
 
 public class ApplicationController extends Controller {
     public Result showKeibaweb() {
-        String sql = "select to_char(a.open_date, 'YYYY/MM/DD') as open_date, b.location_name from tr_race_calendar as a, ms_location as b where a.location_kbn = b.location_kbn and (a.open_date >= current_timestamp and a.open_date <= (current_timestamp + interval '7 days')) order by a.open_date";
+		StringBuilder sb = new StringBuilder();
+		sb.append("select to_char(a.open_date, 'YYYY/MM/DD') as open_date, ");
+		sb.append("b.location_name ");
+		sb.append("from tr_race_calendar as a, ms_location as b ");
+		sb.append("where a.location_kbn = b.location_kbn ");
+		sb.append("and (a.open_date >= current_timestamp and a.open_date <= (current_timestamp + interval '7 days')) ");
+		sb.append("order by a.open_date");
+
+//    	String sql = "select to_char(a.open_date, 'YYYY/MM/DD') as open_date, b.location_name from tr_race_calendar as a, ms_location as b where a.location_kbn = b.location_kbn and (a.open_date >= current_timestamp and a.open_date <= (current_timestamp + interval '7 days')) order by a.open_date";
+		String sql = sb.toString();
 
         List<SqlRow> information = Ebean.createSqlQuery(sql).findList();
 
@@ -76,14 +104,9 @@ public class ApplicationController extends Controller {
 
     	sb.append("select b.open_date, c.location_name, b.race_number, d.rank_name, e.course_name, f.distance_name, b.race_population, ");
     	sb.append("a.* ");
-//    	sb.append("a.arriving_1_horse_number, a.comp_index_1,a.arriving_2_horse_number, a.comp_index_2,a.arriving_3_horse_number, a.comp_index_3,a.arriving_4_horse_number, a.comp_index_4, ");
-//    	sb.append("a.arriving_5_horse_number, a.comp_index_5,a.arriving_6_horse_number, a.comp_index_6,a.arriving_7_horse_number, a.comp_index_7,a.arriving_8_horse_number, a.comp_index_8, ");
-//    	sb.append("a.arriving_9_horse_number, a.comp_index_9,a.arriving_10_horse_number, a.comp_index_10,a.arriving_11_horse_number, a.comp_index_11,a.arriving_12_horse_number, a.comp_index_12, ");
-//    	sb.append("a.arriving_13_horse_number, a.comp_index_13,a.arriving_14_horse_number, a.comp_index_14,a.arriving_15_horse_number, a.comp_index_15,a.arriving_16_horse_number, a.comp_index_16, ");
-//    	sb.append("a.arriving_17_horse_number, a.comp_index_17,a.arriving_18_horse_number, a.comp_index_18 ");
     	sb.append("from tr_race_result as a, tr_race as b, ms_location as c, ms_rank as d, ms_course as e, ms_distance as f ");
     	sb.append("where a.race_id = b.race_id and b.location_kbn = c.location_kbn and b.rank_kbn = d.rank_kbn and b.course_kbn = e.course_kbn and b.distance_kbn = f.distance_kbn ");
-    	sb.append("and open_date > '2015/7/19' ");
+    	sb.append("and open_date > '2015/8/29' ");
     	sb.append("order by b.open_date, b.location_kbn, b.race_number");
 
     	String sql = sb.toString();
@@ -103,5 +126,64 @@ public class ApplicationController extends Controller {
 
     public Result showResultPage() {
     	return ok(result.render(null));
+	}
+
+    public Result showListPage() {
+    	StringBuilder sb = new StringBuilder();
+
+    	sb.append("select b.open_date, c.location_name, b.race_number, d.rank_name, e.course_name, f.distance_name, b.race_population, ");
+    	sb.append("a.* ");
+    	sb.append("from tr_race_result as a, tr_race as b, ms_location as c, ms_rank as d, ms_course as e, ms_distance as f ");
+    	sb.append("where a.race_id = b.race_id and b.location_kbn = c.location_kbn and b.rank_kbn = d.rank_kbn and b.course_kbn = e.course_kbn and b.distance_kbn = f.distance_kbn ");
+    	sb.append("and open_date >= '2015/8/29' ");
+    	sb.append("order by b.open_date, b.location_kbn, b.race_number");
+
+    	String sql = sb.toString();
+
+    	List<SqlRow> results = Ebean.createSqlQuery(sql).findList();
+
+    	return ok(list.render(results));
+    }
+
+	public Result showRaceCalendar() {
+		Calendar cal = Calendar.getInstance();
+
+		String year = String.valueOf(cal.get(Calendar.YEAR) - 1);
+
+		List<SqlRow> result = DataAccess.getOpenYear();
+		List<SqlRow> opendates = DataAccess.getOpenDateByYear(year);
+
+		return ok(calendar.render(result, opendates));
+	}
+
+	public Result postRaceCalendar() {
+		String method = request().method();
+
+		String year = "";
+		Calendar cal = Calendar.getInstance();
+
+		year = String.valueOf(cal.get(Calendar.YEAR) - 1);
+		if("GET".equals(method)) {
+		} else {
+			Map<String, String[]> form = request().body().asFormUrlEncoded();
+
+			year = form.get("year")[0];
+		}
+		List<SqlRow> result = DataAccess.getOpenYear();
+		List<SqlRow> opendates = DataAccess.getOpenDateByYear(year);
+
+		return ok(calendar.render(result, opendates));
+	}
+
+	public Result showRaceInformation(String openDate, String kbn) {
+		List<SqlRow> result = DataAccess.getRaceInfomation(openDate, kbn);
+
+		return ok(raceinfo.render(result));
+	}
+
+	public Result showRaceResult(String id) {
+		List<SqlRow>result = DataAccess.getRaceResultDetails(Integer.valueOf(id));
+
+		return ok(raceresult.render(result));
 	}
 }

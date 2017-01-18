@@ -1,0 +1,72 @@
+@(years: List[com.avaje.ebean.SqlRow], opendates:List[com.avaje.ebean.SqlRow])
+
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta http-equiv="content-language" content="ja">
+		<meta http:equiv="content-type" content="text/html;charset=UTF-8">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-cache">
+		<title>カレンダー</title>
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("easyui/themes/default/easyui.css")">
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("easyui/themes/icon.css")">
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/main.css")">
+		<script src="@routes.Assets.versioned("easyui/jquery.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("easyui/jquery.easyui.min.js")" type="text/javascript"></script>
+
+	</head>
+	<body>
+    @* 共通メニュー *@
+    @menu()
+    <p/>
+    <p/>
+    <p/>
+    <p/>
+    <form id="cal_form">
+	    <p>
+	    	@for(year<-years) {
+	    		<a href="#" onClick="return clickYearLink('@year.getString("open_year")')">@year.getString("open_year")年</a>&nbsp;&nbsp;
+				}
+	    </p>
+	    <p/>
+	    <p/>
+	    <p/>
+	    <div id="tc">
+    		@for(i<-0 to opendates.length - 1) {
+ 					<a href="#" onClick="clickOpenDate('@opendates.get(i).getString("open_date")', '@opendates.get(i).getString("location_kbn")')">@opendates.get(i).getString("open_fmt_date") : @opendates.get(i).getString("location_name")</a><br/>
+   			}
+    		<input type="hidden" id="year" name="year" value="">
+    		<input type="hidden" id="open_date" name="open_date" value="">
+    		<input type="hidden" id="location_kbn" name="location_kbn" value="">
+	    </div>
+		</form>
+  </body>
+  <script>
+  	function clickYearLink(year) {
+  			var $form = $('#cal_form');
+
+  			$('#year').val(year);
+
+				$.ajax({
+						type: 'POST',
+						url: '/calendar',
+						data: $form.serialize()
+				})
+				.done(function(data, textStatus, jqXHR){
+						$("#tc").html(data);
+				})
+				.fail(function(jqXHR, textStatus, errorThrown){
+				})
+				.always(function(jqXHR, textStatus){
+				});
+ 		}
+
+ 		function clickOpenDate(openDate, kbn) {
+ 				var url = '/raceinfo?opendate=' + openDate + '&kbn=' + kbn;
+
+				console.log(url);
+
+				window.location.href = url;
+		}
+  </script>
+</html>

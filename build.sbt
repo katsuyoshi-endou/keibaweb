@@ -11,7 +11,11 @@ libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaWs,
-  "org.postgresql" % "postgresql" % "9.4.1212"
+  "org.postgresql" % "postgresql" % "9.4.1212",
+  "com.typesafe.play" %% "play-mailer" % "5.0.0",
+  "org.freemarker" % "freemarker" % "2.3.23",
+  "org.apache.commons" % "commons-email" % "1.4",
+  "javax.mail" % "mail" % "1.4.7"
 )
 ivyConfiguration ~= { originalIvyConfiguration =>
 

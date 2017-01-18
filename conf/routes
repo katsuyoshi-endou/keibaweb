@@ -18,3 +18,7 @@ GET /forecast.json                  controllers.ApplicationController.getRaceCom
 POST /forecast                      controllers.ApplicationController.showForecastPage()
 GET /result							controllers.ApplicationController.showResultPage()
 POST /result.json					controllers.ApplicationController.getRaceResult()
+GET /list							controllers.ApplicationController.showListPage()
+GET	/calendar						controllers.ApplicationController.showRaceCalendar()
+GET /raceinfo						controllers.ApplicationController.showRaceInformation(opendate:String, kbn:String)
+GET /raceresult						controllers.ApplicationController.showRaceResult(id:String)
