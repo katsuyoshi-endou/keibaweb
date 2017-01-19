@@ -1,5 +1,7 @@
 @* raceresult Template File *@
-@(results: List[com.avaje.ebean.SqlRow])
+@(info: List[com.avaje.ebean.SqlRow], results: List[com.avaje.ebean.SqlRow], payouts: List[com.avaje.ebean.SqlRow])
+
+@raceInfo = @{info.get(0)}
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -22,10 +24,23 @@
     <p>&nbsp;</p>
     <div>
     	<form id="result_form">
-				@if(results != null) {
-					@results.get(0).getString("open_date")&nbsp;@results.get(0).getString("location_name")競馬場&nbsp;第@results.get(0).getString("race_no")R
-				}
-				<div>
+    		<label>
+					@raceInfo.getString("open_date")&nbsp;
+					@raceInfo.getString("location_name")競馬場&nbsp;
+					第@raceInfo.getString("race_no")R&nbsp;
+					@if(raceInfo.getString("race_name") != "") {
+						@raceInfo.getString("race_name")&#40;@raceInfo.getString("age_name")@raceInfo.getString("rank_name")&#41;
+					} else {
+						@raceInfo.getString("age_name")@raceInfo.getString("rank_name")
+					}
+					&nbsp;
+					@raceInfo.getString("course_name") : @raceInfo.getString("course_distance")m
+					&nbsp;&nbsp;
+					天候：@raceInfo.getString("weather_name")
+					&nbsp;&nbsp;
+					馬場状態：@raceInfo.getString("condition_name")
+				</label>
+				<div class="tableContainer">
 					<table>
 						<tr>
 							<th>着順</th>
@@ -39,6 +54,7 @@
 							<th>タイム</th>
 							<th>差</th>
 							<th>人気</th>
+							<th>指数順位</th>
 							<th>馬体重</th>
 							<th>前回</th>
 							<th>厩舎</th>
@@ -48,22 +64,59 @@
 								<td>@result.getString("race_order")</td>
 								<td>@result.getString("horse_number")</td>
 								<td>@result.getString("race_border")</td>
-								<td>@result.getString("horse_name")</td>
-								<td>@result.getString("comp_index")[@result.getString("index_order")]</td>
+								<td><a href="#" onClick="return clickHorseName('@result.getString("horse_name")')">@result.getString("horse_name")</a></td>
+								<td>@result.getString("comp_index")</td>
 								<td>@result.getString("horse_sex") @result.getString("age")</td>
 								<td>@result.getDouble("basis_weight")</td>
 								<td>@result.getString("jockey")</td>
 								<td>@result.getString("race_time")</td>
 								<td>@result.getString("incom")</td>
 								<td>@result.getString("popularity")</td>
+								<td>@result.getString("index_order")</td>
 								<td>@result.getString("weight")</td>
-								<td>@result.getString("preweight")</td>
+								<td>
+									@if(result.getString("preweight") == "0") {
+										-
+									} else {
+										@result.getString("preweight")
+									}
+								</td>
 								<td>@result.getString("stable")</td>
 							</tr>
 						}
 					</table>
 				</div>
+				<p>&nbsp;</p>
+				@if(payouts != null) {
+					<label>払い戻し</label>
+					<table class="hor-minimalist-b">
+						<thead>
+							<tr>
+								<th>種別</th>
+								<th>番号</th>
+								<th>金額</th>
+								<th>人気</th>
+							</tr>
+						</thead>
+							@for(payout<-payouts) {
+								<tr>
+									<td>@payout.getString("divident_name")</td>
+									<td>@payout.getString("win_number")</td>
+									<td style="text-align:right;">@payout.getString("payout")円</td>
+									<td>@payout.getString("popularity")</td>
+								</tr>
+							}
+						<tbody>
+						</tbody>
+					</table>
+				}
     	</form>
     </div>
 	</body>
+	<script>
+		function clickHorseName(name) {
+				var param = encodeURI(name);
+				document.location.href = '/horseinfo?name=' + param;
+		}
+	</script>
 </html>

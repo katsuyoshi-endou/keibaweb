@@ -25,7 +25,7 @@
     <form id="cal_form">
 	    <p>
 	    	@for(year<-years) {
-	    		<a href="#" onClick="return clickYearLink('@year.getString("open_year")')">@year.getString("open_year")年</a>&nbsp;&nbsp;
+	    		<a href="/calendar?year=@year.getString("open_year")">@year.getString("open_year")年</a>&nbsp;&nbsp;
 				}
 	    </p>
 	    <p/>

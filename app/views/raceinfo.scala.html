@@ -21,40 +21,46 @@
     @menu()
     <p>&nbsp;</p>
     <form id="info_form">
-
-
    		@if(infos != null) {
-	    	<table>
-	    		<tr>
-  	  			<th>レース</th>
-  	  			<th colspan="3">レース名・条件</th>
-  	  			<th>結果詳細</th>
-    			</tr>
-    			@for(i<-0 to infos.length - 1) {
+   			<div class="tableContainer">
+   				<label>@infos.get(0).getString("open_date")&nbsp;&nbsp;@infos.get(0).getString("location_name")競馬場</label>
+		    	<table>
 		    		<tr>
-		    			<td>@{i+1}R</td>
-		    			@if(infos.get(i).getString("race_name") != "") {
-			    			<td>
-			    				@infos.get(i).getString("race_name")&#40;
-			    				@infos.get(i).getString("age_name")@infos.get(i).getString("rank_name")&#41;
-			    			</td>
-		    			} else {
-			    			<td>@infos.get(i).getString("age_name")@infos.get(i).getString("rank_name")</td>
-			    		}
-  		  			<td>
-  		  				@infos.get(i).getString("handi_name")
-  		  				@infos.get(i).getString("type_1")&nbsp;
-  		  				@infos.get(i).getString("type_2")&nbsp;
-  		  				@infos.get(i).getString("type_3")&nbsp;
-  		  				@infos.get(i).getString("type_4")&nbsp;
-  		  				@infos.get(i).getString("type_5")&nbsp;
-  		  				@infos.get(i).getString("type_6")&nbsp;
-  		  			</td>
-  		  			<td>@infos.get(i).getString("course_name") : @infos.get(i).getString("distance_from")</td>
-			    		<td><a href="/raceresult?id=@infos.get(i).getString("id")">結果詳細</a></td>
-  		  		</tr>
-    			}
-	    	</table>
+  		  			<th>レース</th>
+  	  				<th colspan="4">レース名・条件</th>
+  	  				<th>結果詳細</th>
+    				</tr>
+	    			@for(i<-0 to infos.length - 1) {
+			    		<tr>
+			    			<td>@{i+1}R</td>
+								<td>
+								@if(infos.get(i).getString("race_grade") != "") {
+									<label class="decorate">@infos.get(i).getString("race_grade")</label>
+								}
+		  	  			@if(infos.get(i).getString("race_name") != "") {
+		    					@infos.get(i).getString("race_name")&#40;
+		    					@infos.get(i).getString("age_name")@infos.get(i).getString("rank_name")&#41;
+			    			} else {
+				    			@infos.get(i).getString("age_name")@infos.get(i).getString("rank_name")
+				    		}
+				    		</td>
+	  		  			<td>
+  			  				@infos.get(i).getString("handi_name")
+  			  			</td>
+  			  			<td>
+  			  				@infos.get(i).getString("type_1")&nbsp;
+  			  				@infos.get(i).getString("type_2")&nbsp;
+  		  					@infos.get(i).getString("type_3")&nbsp;
+  		  					@infos.get(i).getString("type_4")&nbsp;
+  		  					@infos.get(i).getString("type_5")&nbsp;
+  		  					@infos.get(i).getString("type_6")&nbsp;
+	  		  			</td>
+  			  			<td>@infos.get(i).getString("course_name") : @infos.get(i).getString("course_distance")</td>
+				    		<td><a href="/raceresult?id=@infos.get(i).getString("id")">結果詳細</a></td>
+  			  		</tr>
+	    			}
+		    	</table>
+		    </div>
 	    }
     </form>
 	</body>
