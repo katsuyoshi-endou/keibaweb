@@ -15,7 +15,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-mailer" % "5.0.0",
   "org.freemarker" % "freemarker" % "2.3.23",
   "org.apache.commons" % "commons-email" % "1.4",
-  "javax.mail" % "mail" % "1.4.7"
+  "javax.mail" % "mail" % "1.4.7",
+	"org.jfree" % "jfreechart" % "1.0.19"
 )
 ivyConfiguration ~= { originalIvyConfiguration =>
 

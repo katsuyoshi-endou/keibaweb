@@ -94,3 +94,15 @@
 .icon-large-chart{
 	background:url('icons/large_chart.png') no-repeat center center;
 }
+
+.icon-analyze{
+	background:url('icons/analyze.png') no-repeat center center;
+}
+
+.icon-calc{
+	background:url('icons/calc.png') no-repeat center center;
+}
+
+.icon-csv{
+	background:url('icons/csv.png') no-repeat center center;
+}

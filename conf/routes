@@ -12,8 +12,14 @@ GET     /                           controllers.HomeController.index
 # Map static resources from the /public folder to the /assets URL path
 GET /assets/*file					controllers.Assets.versioned(path="/public", file: Asset)
 
-GET /keibaweb						controllers.ApplicationController.showKeibaweb()
-GET	/calendar						controllers.ApplicationController.showRaceCalendar(year:String)
-GET /raceinfo						controllers.ApplicationController.showRaceInformation(opendate:String, kbn:String)
-GET /raceresult						controllers.ApplicationController.showRaceResult(id:String)
-GET /horseinfo						controllers.ApplicationController.showHorseInfo(name:String)
+GET  /keibaweb						controllers.ApplicationController.showKeibaweb()
+GET	 /calendar						controllers.ApplicationController.showRaceCalendar(year:String)
+GET  /raceinfo						controllers.ApplicationController.showRaceInformation(opendate:String, kbn:String)
+GET  /raceresult					controllers.ApplicationController.showRaceResult(id:String)
+GET  /horseinfo						controllers.ApplicationController.showHorseInfo(name:String)
+GET  /search						controllers.ApplicationController.showSearch()
+POST /search						controllers.ApplicationController.postSearch()
+GET  /analyze						controllers.ApplicationController.showAnalyze()
+POST /analyze						controllers.ApplicationController.postAnalyze()
+POST /downloadCSV				controllers.ApplicationController.downloadCSV()
+

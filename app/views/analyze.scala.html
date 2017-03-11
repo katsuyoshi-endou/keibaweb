@@ -1,0 +1,222 @@
+@* analyze Template File *@
+@(results: List[com.avaje.ebean.SqlRow], count: Integer)
+
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta http-equiv="content-language" content="ja">
+		<meta http:equiv="content-type" content="text/html;charset=UTF-8">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-cache">
+		<title>競走馬情報</title>
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("easyui/themes/default/easyui.css")">
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("easyui/themes/icon.css")">
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/main.css")">
+		<script src="@routes.Assets.versioned("easyui/jquery.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("easyui/jquery.easyui.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("javascripts/keibaweb.js")" type="text/javascript"></script>
+
+		<style>
+			div.tableContainer {
+				height: 600px;
+				width: auto;
+				overflow-y: scroll;
+			}
+
+			p {
+				font-size: 12px;
+			}
+		</style>
+	</head>
+	<body>
+		@* 共通メニュー *@
+		@menu()
+		<p>&nbsp;</p>
+		<form id="analyze_form" action="/downloadCSV" method="post">
+			<table style="border-spacing:5px;">
+				<tr>
+					<td><label>1位指数</label></td>
+					<td><input class="easyui-textbox" id="input_1" name="input_1" value="0" style="width:100px;text-align:right;"></td>
+					<td><label>2位指数</label></td>
+					<td><input class="easyui-textbox" id="input_2" name="input_2" value="0" style="width:100px;text-align:right;"></td>
+					<td><label>3位指数</label></td>
+					<td><input class="easyui-textbox" id="input_3" name="input_3" value="0" style="width:100px;text-align:right;"></td>
+					<td><label>4位指数</label></td>
+					<td><input class="easyui-textbox" id="input_4" name="input_4" value="0" style="width:100px;text-align:right;"></td>
+					<td><label>5位指数</label></td>
+					<td><input class="easyui-textbox" id="input_5" name="input_5" value="0" style="width:100px;text-align:right;"></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td><input class="easyui-textbox" id="disp_1" name="disp_1" value="0" data-options="disabled:true" style="width:100px;text-align:right;"></td>
+					<td>&nbsp;</td>
+					<td><input class="easyui-textbox" id="disp_2" name="disp_2" value="0" data-options="disabled:true" style="width:100px;text-align:right;"></td>
+					<td>&nbsp;</td>
+					<td><input class="easyui-textbox" id="disp_3" name="disp_3" value="0" data-options="disabled:true" style="width:100px;text-align:right;"></td>
+					<td>&nbsp;</td>
+					<td><input class="easyui-textbox" id="disp_4" name="disp_4" value="0" data-options="disabled:true" style="width:100px;text-align:right;"></td>
+					<td>&nbsp;</td>
+					<td><input class="easyui-textbox" id="disp_5" name="disp_5" value="0" data-options="disabled:true" style="width:100px;text-align:right;"></td>
+				<tr>
+					<td><label>標準偏差：</label></td>
+					<td colspan="9">
+						<input class="easyui-textbox" id="index_start" name="index_start" value="12.0" style="width:60px;text-align:right;">
+						<label>&nbsp;～&nbsp;</label>
+						<input class="easyui-textbox" id="index_end" name="index_end" value="12.1" style="width:60px;text-align:right;">
+					</td>
+				</tr>
+			</table>
+			<div style="padding:5px;"></div>
+			<a href="#" class="easyui-linkbutton" onClick="return calcStddev()" data-options="iconCls:'icon-calc'" style="width:140px;">標準偏差を計算</a>
+			<a href="#" class="easyui-linkbutton" onClick="return searchData()" data-options="iconCls:'icon-search'" style="width:80px">検索</a>
+			<a href="#" class="easyui-linkbutton" onClick="analyze_form.submit()" data-options="iconCls:'icon-csv'" style="width:150px">CSVダウンロード</a>
+			<input type="hidden" id="index_1" name="index_1" value="0">
+			<input type="hidden" id="index_2" name="index_2" value="0">
+			<input type="hidden" id="index_3" name="index_3" value="0">
+			<input type="hidden" id="index_4" name="index_4" value="0">
+			<input type="hidden" id="index_5" name="index_5" value="0">
+			<div style="padding:10px;"></div>
+			<div id="tc">
+				<div class="tableContainer">
+					<table>
+						<tr>
+							<th style="width:100px;">1着馬【指数】</th>
+							<th style="width:100px;">1着馬【人気】</th>
+							<th style="width:100px;">2着馬【指数】</th>
+							<th style="width:100px;">2着馬【人気】</th>
+							<th style="width:100px;">標準偏差</th>
+							<th style="width:80px;">馬齢</th>
+							<th style="width:80px;">ランク</th>
+							<th style="width:80px;">ハンデ</th>
+							<th style="width:80px;">頭数</th>
+							<th style="width:80px;">距離</th>
+							<th style="width:80px;">コース</th>
+							<th style="width:80px;">天候</th>
+							<th style="width:80px;">馬場状態</th>
+							<th style="width:80px;">グレード</th>
+						</tr>
+						@for(result<-results){
+							<tr>
+								<td>@result.getString("win_1_index_rank")</td>
+								<td>@result.getString("popularity_1")</td>
+								<td>@result.getString("win_2_index_rank")</td>
+								<td>@result.getString("popularity_2")</td>
+								<td>@result.getDouble("standard_deviation")</td>
+								<td>@result.getString("age_name")</td>
+								<td>@result.getString("rank_name")</td>
+								<td>@result.getString("handi_name")</td>
+								<td>@result.getString("population")</td>
+								<td>@result.getString("race_distance")</td>
+								<td>@result.getString("course_name")</td>
+								<td>@result.getString("weather_name")</td>
+								<td>@result.getString("condition_name")</td>
+								<td>@result.getString("grade")</td>
+							</tr>
+						}
+					</table>
+				</div>
+			</div>
+		</form>
+		<script>
+			$(function(){
+					$('#input_1').textbox('textbox').bind('blur', function(e){
+							var num = Math.round(parseInt($('#input_1').textbox('getValue')) /10) *10;
+							$('#disp_1').textbox('setValue', num);
+							$('#index_1').val(num);
+					});
+					$('#input_2').textbox('textbox').bind('blur', function(e){
+							var num = Math.round(parseInt($('#input_2').textbox('getValue')) /10) *10;
+							$('#disp_2').textbox('setValue', num);
+							$('#index_2').val(num);
+					});
+					$('#input_3').textbox('textbox').bind('blur', function(e){
+							var num = Math.round(parseInt($('#input_3').textbox('getValue')) /10) *10;
+							$('#disp_3').textbox('setValue', num);
+							$('#index_3').val(num);
+					});
+					$('#input_4').textbox('textbox').bind('blur', function(e){
+							var num = Math.round(parseInt($('#input_4').textbox('getValue')) /10) *10;
+							$('#disp_4').textbox('setValue', num);
+							$('#index_4').val(num);
+					});
+					$('#input_5').textbox('textbox').bind('blur', function(e){
+							var num = Math.round(parseInt($('#input_5').textbox('getValue')) /10) *10;
+							$('#disp_5').textbox('setValue', num);
+							$('#index_5').val(num);
+					});
+
+					$('#p').panel('collapse',true);
+			});
+
+			function searchData() {
+					var $form = $('#analyze_form');
+
+					var index_1 = $('#index_1').val();
+					if(index_1 == 0) {
+							$.messager.alert('エラー', '1位の指数を指定してね', 'warning');
+							return false;
+					}
+
+					var index_2 = $('#index_2').val();
+					if(index_2 == 0) {
+							$.messager.alert('エラー', '2位の指数を指定してね', 'warning');
+							return false;
+					}
+
+					var index_3 = $('#index_3').val();
+					if(index_3 == 0) {
+							$.messager.alert('エラー', '3位の指数を指定してね', 'warning');
+							return false;
+					}
+
+					var index_5 = $('#index_5').val();
+					var index_4 = $('#index_4').val();
+					if(index_4 == 0) {
+							$('#index_5').val();
+					}
+
+					var stddev_s = $('#index_start').textbox('getValue');
+					if(stddev_s == '') {
+							stddev_s = 0.0;
+					}
+
+					var stddev_e = $('#index_end').textbox('getValue');
+					if(stddev_e == '') {
+							stddev_e = 99.9;
+					}
+
+					$.ajax({
+							type: 'POST',
+							url: '/analyze',
+							cache: false,
+							data: $form.serialize()
+					})
+					.done(function(data, textStatus, jqXHR){
+							$("#tc").html($(data).find('#tc').html());
+					})
+					.fail(function(jqXHR, textStatus, errorThrown){
+							$.messager.alert('alert', '検索に失敗しました', 'warning');
+					})
+					.always(function(jqXHR, textStatus){
+					});
+			}
+
+			function calcStddev() {
+					var data = new Array(5);
+
+					data[0] = $('#input_1').textbox('getValue');
+					data[1] = $('#input_2').textbox('getValue');
+					data[2] = $('#input_3').textbox('getValue');
+					data[3] = $('#input_4').textbox('getValue');
+					data[4] = $('#input_5').textbox('getValue');
+
+					var num = parseFloat(stddev(data));
+					var num1 = num * 10;
+					num1 = Math.round(num1) / 10;
+
+					$('#index_start').textbox('setValue', num1);
+					$('#index_end').textbox('setValue', num1);
+			}
+		</script>
+	</body>
+</html>

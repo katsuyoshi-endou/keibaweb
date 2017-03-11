@@ -1,0 +1,250 @@
+@* search Template File *@
+@(results: List[com.avaje.ebean.SqlRow])
+
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta http-equiv="content-language" content="ja">
+		<meta http:equiv="content-type" content="text/html;charset=UTF-8">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-cache">
+		<title>競走馬情報</title>
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("easyui/themes/default/easyui.css")">
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("easyui/themes/icon.css")">
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/main.css")">
+		<script src="@routes.Assets.versioned("easyui/jquery.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("easyui/jquery.easyui.min.js")" type="text/javascript"></script>
+
+	</head>
+	<body>
+    @* 共通メニュー *@
+    @menu()
+    <p>&nbsp;</p>
+    <form id="search_form">
+    <div class="easyui-panel" style="width:700px;padding:10px;" title="検索オプション">
+    	<table style="border-spacing:5px;">
+    		<tr>
+    			<td>開催日</td>
+    			<td colspan="5">
+    				<input class="easyui-datebox" id="startdate" name="startdate" data-options="formatter:myformatter,parser:myparser" style="width:150px;">
+						&nbsp;～&nbsp;
+    				<input class="easyui-datebox" id="enddate" name="enddate" data-options="formatter:myformatter,parser:myparser" style="width:150px;">
+    			</td>
+    		</tr>
+    		<tr>
+    			<td>開催地</td>
+    			<td colspan="5">
+    				<label for="locationChk1"><input type="checkbox" id="locationChk1" name="locationChk" value="0" checked/>札幌</label>
+    				<label for="locationChk2"><input type="checkbox" id="locationChk2" name="locationChk" value="1" checked/>函館</label>
+    				<label for="locationChk3"><input type="checkbox" id="locationChk3" name="locationChk" value="2" checked/>福島</label>
+    				<label for="locationChk4"><input type="checkbox" id="locationChk4" name="locationChk" value="3" checked/>新潟</label>
+    				<label for="locationChk5"><input type="checkbox" id="locationChk5" name="locationChk" value="4" checked/>東京</label>
+    				<label for="locationChk6"><input type="checkbox" id="locationChk6" name="locationChk" value="5" checked/>中山</label>
+    				<label for="locationChk7"><input type="checkbox" id="locationChk7" name="locationChk" value="6" checked/>中京</label>
+    				<label for="locationChk8"><input type="checkbox" id="locationChk8" name="locationChk" value="7" checked/>京都</label>
+    				<label for="locationChk9"><input type="checkbox" id="locationChk9" name="locationChk" value="8" checked/>阪神</label>
+    				<label for="locationChk10"><input type="checkbox" id="locationChk10" name="locationChk" value="9" checked/>小倉</label>
+    			</td>
+    		</tr>
+    		<tr>
+    			<td>馬齢</td>
+    			<td>
+    				<select class="easyui-combobox" id="ageKbn" name="ageKbn">
+    					<option value="99">&nbsp;</option>
+    					<option value="0">2歳</option>
+    					<option value="1">3歳</option>
+    					<option value="3">3歳上</option>
+    					<option value="2">4歳上</option>
+    				</select>
+    			</td>
+    			<td>ランク</td>
+    			<td>
+    				<select class="easyui-combobox" id="rankKbn" name="rankKbn" editable="false">
+    					<option value="99" selected>&nbsp;<option>
+    					<option value="0">オープン</option>
+    					<option value="1">新馬</option>
+    					<option value="2">未勝利</option>
+    					<option value="3">500万以下</option>
+    					<option value="4">1000万以下</option>
+    					<option value="6">1600万以下</option>
+    				</select>
+    			</td>
+    			<td>ハンデ</td>
+    			<td>
+    				<select class="easyui-combobox" id="handiKbn" name="handiKbn">
+    					<option value="99" selected>&nbsp;</option>
+    					<option value="1">定量</option>
+    					<option value="2">別定</option>
+    					<option value="3">馬齢</option>
+    					<option value="4">ハンデ</option>
+    				</select>
+    			</td>
+    		</tr>
+    		<tr>
+    		</tr>
+    		<tr>
+    			<td>コース</td>
+    			<td>
+    				<select class="easyui-combobox" id="courseKbn" name="courseKbn">
+    					<option value="99">&nbsp;</option>
+    					<option value="0">芝</option>
+    					<option value="1">ダート</option>
+    					<option value="2">障害</option>
+    				</select>
+    			</td>
+   				<td>距離</td>
+   				<td>
+   					<select class="easyui-combobox" id="distanceKbn" name="distanceKbn">
+   						<option value="999">&nbsp;</option>
+							<option value="100">1000m - 1200m</option>
+							<option value="101">1200m - 1400m</option>
+							<option value="200">1400m - 1600m</option>
+							<option value="201">1600m - 1800m</option>
+							<option value="300">1800m - 2000m</option>
+							<option value="301">2000m - 2200m</option>
+							<option value="400">2200m - 2400m</option>
+							<option value="401">2400m - 2600m</option>
+							<option value="402">2600m - 2800m</option>
+							<option value="500">2800m - 3000m</option>
+							<option value="501">3000m - 3200m</option>
+							<option value="502">3200m - 3400m</option>
+							<option value="503">3400m - 3600m</option>
+							<option value="504">3600m - 3800m</option>
+							<option value="505">3800m - 4000m</option>
+							<option value="506">4000m - 4200m</option>
+							<option value="507">4200m - 4400m</option>
+							<option value="508">4400m - 4600m</option>
+							<option value="509">4600m - 4800m</option>
+							<option value="510">4800m - 5000m</option>
+   					</select>
+   				</td>
+   				<td></td>
+   				<td></td>
+    		</tr>
+    		<tr>
+    			<td>天候</td>
+    			<td>
+    				<select class="easyui-combobox" id="weatherKbn" name="weatherKbn">
+    					<option value="99">&nbsp;</option>
+    					<option value="0">晴</option>
+    					<option value="1">曇</option>
+    					<option value="2">小雨</option>
+    					<option value="3">雨</option>
+    					<option value="4">小雪</option>
+    					<option value="5">雪</option>
+    					<option value="9">その他</option>
+    				</select>
+    			</td>
+    			<td>馬場状態</td>
+    			<td>
+    				<select class="easyui-combobox" id="conditionKbn" name="conditionKbn">
+    					<option value="99">&nbsp;</option>
+    					<option value="0">良</option>
+    					<option value="1">不良</option>
+    					<option value="2">重</option>
+    					<option value="3">稍重</option>
+    				</select>
+    			</td>
+   				<td></td>
+   				<td></td>
+    		</tr>
+    		<tr>
+    			<td>レース種別</td>
+    			<td colspan="5">
+    				<label for="raceType"><input type="checkbox" id="raceType" name="raceType" title="牝馬限定の競走"/>牝馬限定</label>
+    			</td>
+    		</tr>
+    	</table>
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px" onClick="return clickSearchButton()">検索</a>
+		</div>
+		<p>&nbsp;</p>
+		<div id="tc">
+			<div class="tableContainer">
+				<table>
+					<tr>
+						<th>開催日</th>
+						<th>開催地</th>
+						<th>レース番号</th>
+						<th>レース名</th>
+						<th>ハンデ</th>
+						<th>牝馬限定</th>
+						<th>頭数</th>
+						<th>コース</th>
+						<th>天候</th>
+						<th>馬場状態</th>
+					</tr>
+					@if(results != null) {
+						@for(result<-results){
+							<tr>
+								<td>@result.getString("open_date")</td>
+								<td>@result.getString("location_name")</td>
+								<td>@result.getString("race_no")</td>
+								<td>
+									@if(result.getString("race_grade") != "") {
+										<label class="decorate">@result.getString("race_grade")</label>
+									}
+			  	  			@if(result.getString("race_name") != "") {
+			    					@result.getString("race_name")&#40;
+			    					@result.getString("age_name")@result.getString("rank_name")&#41;
+				    			} else {
+					    			@result.getString("age_name")@result.getString("rank_name")
+					    		}
+								</td>
+								<td>@result.getString("handi_name")</td>
+								<td>@result.getString("type_5")</td>
+								<td>@result.getString("population")</td>
+								<td>@result.getString("course_name"):@result.getString("course_distance")</td>
+								<td>@result.getString("weather_name")</td>
+								<td>@result.getString("condition_name")</td>
+							</tr>
+						}
+					}
+				</table>
+			</div>
+		</div>
+		</form>
+    <script>
+			function myformatter(date){
+					var y = date.getFullYear();
+					var m = date.getMonth()+1;
+					var d = date.getDate();
+					return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
+			}
+
+			function myparser(s){
+					if (!s) return new Date();
+					var ss = (s.split('-'));
+					var y = parseInt(ss[0],10);
+					var m = parseInt(ss[1],10);
+					var d = parseInt(ss[2],10);
+					if (!isNaN(y) && !isNaN(m) && !isNaN(d)){
+							return new Date(y,m-1,d);
+					} else {
+							return new Date();
+					}
+			}
+
+			function clickSearchButton() {
+					var $form = $('#search_form');
+
+					$.ajax({
+							type: 'POST',
+							url: '/search',
+							cache: false,
+							data: $form.serialize()
+					})
+					.done(function(data, textStatus, jqXHR){
+							 $("#tc").html($(data).find('#tc').html());
+//							 $("#search_form").html(data);
+					})
+					.fail(function(jqXHR, textStatus, errorThrown){
+							$.messager.alert('alert', '検索に失敗しました', 'warning');
+					})
+					.always(function(jqXHR, textStatus){
+
+					});
+			}
+	  </script>
+  </body>
+</html>
+
